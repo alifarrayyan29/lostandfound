@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --color-pnl-blue: #0f172a;
+  --color-pnl-yellow: #f59e0b;
+  --color-glass-bg: rgba(255, 255, 255, 0.1);
+  --color-glass-border: rgba(255, 255, 255, 0.2);
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 min-h-screen font-sans antialiased;
+  }
+  
+  /* Dark mode overrides if needed */
+  @media (prefers-color-scheme: dark) {
+    body {
+      @apply bg-slate-950 text-slate-50;
+    }
+  }
+}
+
+/* Custom utilities for glassmorphism */
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+  .glass-dark {
+    @apply bg-slate-900/70 backdrop-blur-md border border-slate-700/50 shadow-xl;
+  }
+}
