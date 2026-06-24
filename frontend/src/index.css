@@ -1,31 +1,184 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @theme {
-  --color-pnl-blue: #0f172a;
-  --color-pnl-yellow: #f59e0b;
-  --color-glass-bg: rgba(255, 255, 255, 0.1);
-  --color-glass-border: rgba(255, 255, 255, 0.2);
+  --color-lime: #C8FF00;
+  --color-lime-dark: #A8D900;
+  --color-surface: #1a1a1a;
+  --color-surface-2: #242424;
+  --color-border: #2a2a2a;
+  --color-muted: #8C8C8C;
+  --font-sans: 'Inter', sans-serif;
 }
 
 @layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
   body {
-    @apply bg-slate-50 text-slate-900 min-h-screen font-sans antialiased;
+    background-color: #0D0D0D;
+    color: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
   }
-  
-  /* Dark mode overrides if needed */
-  @media (prefers-color-scheme: dark) {
-    body {
-      @apply bg-slate-950 text-slate-50;
-    }
-  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #1a1a1a; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #555; }
 }
 
-/* Custom utilities for glassmorphism */
 @layer utilities {
   .glass {
-    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
   }
-  .glass-dark {
-    @apply bg-slate-900/70 backdrop-blur-md border border-slate-700/50 shadow-xl;
+  .card {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+  }
+  .card-hover {
+    transition: all 0.2s ease;
+  }
+  .card-hover:hover {
+    border-color: rgba(200,255,0,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(200,255,0,0.08);
+  }
+  .btn-lime {
+    background: #C8FF00;
+    color: #0D0D0D;
+    font-weight: 700;
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+  }
+  .btn-lime:hover {
+    background: #A8D900;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(200,255,0,0.3);
+  }
+  .btn-lime:active { transform: scale(0.97); }
+  .btn-ghost {
+    background: #242424;
+    color: #FFFFFF;
+    border: 1px solid #2a2a2a;
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+  }
+  .btn-ghost:hover {
+    border-color: #C8FF00;
+    color: #C8FF00;
+  }
+  .input-field {
+    background: #242424;
+    border: 1.5px solid #2a2a2a;
+    border-radius: 12px;
+    color: #fff;
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-field:focus { border-color: #C8FF00; }
+  .input-field::placeholder { color: #8C8C8C; }
+  .badge-dokumen { background: rgba(59,130,246,0.15); color: #60A5FA; }
+  .badge-elektronik { background: rgba(139,92,246,0.15); color: #A78BFA; }
+  .badge-umum { background: rgba(16,185,129,0.15); color: #34D399; }
+  .badge-hilang { background: rgba(239,68,68,0.15); color: #F87171; }
+  .badge-temuan { background: rgba(200,255,0,0.15); color: #C8FF00; }
+  
+  /* Admin & Global Polish */
+  .fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .page-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(90deg, #FFFFFF, #C8FF00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .glass-panel {
+    background: rgba(30,30,30,0.6);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  .stat-card h3 {
+    font-size: 0.9rem;
+    color: #8C8C8C;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  .stat-card .stat-value {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #C8FF00;
+  }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  .admin-table th, .admin-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #2a2a2a;
+    font-size: 0.95rem;
+  }
+  .admin-table th {
+    color: #8C8C8C;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+  }
+  .admin-table tr:hover {
+    background: rgba(255,255,255,0.02);
+  }
+  .badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .role-admin { background: rgba(139,92,246,0.15); color: #A78BFA; }
+  .role-mahasiswa { background: rgba(59,130,246,0.15); color: #60A5FA; }
+  .status-active { background: rgba(16,185,129,0.15); color: #34D399; }
+  .status-pending-verification { background: rgba(245,158,11,0.15); color: #FBBF24; }
+  .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn-primary {
+    background: #C8FF00;
+    color: #000;
+  }
+  .btn-primary:hover {
+    background: #A8D900;
+    transform: translateY(-1px);
+  }
+  .btn-sm {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
   }
 }
