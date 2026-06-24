@@ -1,0 +1,99 @@
+### 1. Registrasi Akun Baru
+POST http://localhost:8081/api/auth/register
+Content-Type: application/json
+
+{
+  "nim": "2021020001",
+  "nama": "Budi Santoso",
+  "password": "securePass123",
+  "nomorHp": "08123456789"
+}
+
+### 2. Login untuk Mendapatkan Token JWT
+# Setelah menekan Send Request di bawah ini, 
+# Copy teks JWT Token yang ada di response (tanpa tanda kutip)
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "nim": "2021020001",
+  "password": "securePass123"
+}
+
+### 3. Membuat Laporan Barang Hilang (Memerlukan Token JWT)
+# Ganti <PASTE_TOKEN_DISINI> dengan token yang kamu dapat dari login
+POST http://localhost:8081/api/laporan/hilang
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMDIxMDIwMDAxIiwiaWF0IjoxNzgwNzQwNzQ1LCJleHAiOjE3ODA4MjcxNDV9._Ug_r2VXmAfiYAOWZPaWqtfPwOt7VHcI9sB5AMn3wxbhMvtKNSo5MmqZgy08M81s
+
+{
+  "kategori": "ELEKTRONIK",
+  "deskripsi": "Laptop Acer Nitro V15 warna hitam hilang di lab komputer",
+  "latitude": 5.123456,
+  "longitude": 97.123456,
+  "lokasiDeskripsi": "Lab Komputer Gedung TIK Lantai 2",
+  "kondisi": "BAIK",
+  "merk": "Acer",
+  "tipePerangkat": "Laptop",
+  "warnaPerangkat": "Hitam",
+  "tglHilang": "2026-06-06T10:00:00",
+  "catatan": "Ada stiker PNL di belakang layarnya"
+}
+
+### 4. Melihat Daftar Semua Laporan Kehilangan
+# Sama seperti langkah 3, kamu juga harus menyertakan token JWT di sini
+GET http://localhost:8081/api/laporan/hilang
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMDIxMDIwMDAxIiwiaWF0IjoxNzgwNzQwNzQ1LCJleHAiOjE3ODA4MjcxNDV9._Ug_r2VXmAfiYAOWZPaWqtfPwOt7VHcI9sB5AMn3wxbhMvtKNSo5MmqZgy08M81s
+
+### 5. Mengunggah Foto Bukti Barang (Memerlukan Token JWT)
+# Ganti <PASTE_TOKEN_DISINI> dengan token JWT.
+# Siapkan sebuah file foto (contoh: bukti.jpg) di folder backend.
+POST http://localhost:8081/api/files/upload
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMDIxMDIwMDAxIiwiaWF0IjoxNzgwNzQwNzQ1LCJleHAiOjE3ODA4MjcxNDV9._Ug_r2VXmAfiYAOWZPaWqtfPwOt7VHcI9sB5AMn3wxbhMvtKNSo5MmqZgy08M81s
+Content-Type: multipart/form-data; boundary=Boundary
+
+--Boundary
+Content-Disposition: form-data; name="file"; filename="bukti.jpg"
+Content-Type: image/jpeg
+
+< ./bukti.jpg
+--Boundary--
+
+
+### 6. Mengirim Pesan Klaim (Memerlukan Token JWT)
+# Ganti {matchId} dengan ID dari tabel tb_match
+POST http://localhost:8081/api/klaim/1/pesan
+Authorization: Bearer <PASTE_TOKEN_DISINI>
+Content-Type: application/json
+
+{
+  "isiPesan": "Halo, sepertinya ini barang saya yang hilang. Kapan kita bisa bertemu?"
+}
+
+### 7. Melihat Riwayat Pesan (Memerlukan Token JWT)
+GET http://localhost:8081/api/klaim/1/pesan
+Authorization: Bearer <PASTE_TOKEN_DISINI>
+
+### 8. Konfirmasi Kasus Selesai (Memerlukan Token JWT)
+PUT http://localhost:8081/api/klaim/1/konfirmasi
+Authorization: Bearer <PASTE_TOKEN_DISINI>
+
+
+### 9. Login Admin (Data Seeder)
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "nim": "admin",
+  "password": "admin123"
+}
+
+### 10. Dashboard Statistik Admin (Memerlukan Token Admin)
+# Ganti <TOKEN_ADMIN> dengan token hasil login langkah 9
+GET http://localhost:8081/api/admin/stats
+Authorization: Bearer <TOKEN_ADMIN>
+
+### 11. Coba Akses Statistik Menggunakan Token Mahasiswa (Harus Ditolak/403)
+GET http://localhost:8081/api/admin/stats
+Authorization: Bearer <PASTE_TOKEN_DISINI>
+
