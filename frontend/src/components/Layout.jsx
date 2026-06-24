@@ -2,7 +2,7 @@ import Sidebar from './Sidebar';
 
 export default function Layout({ children, noPadding = false }) {
   return (
-    <div className="flex min-h-screen" style={{ background: '#0D0D0D' }}>
+    <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
       <main
         className="flex-1 overflow-y-auto"

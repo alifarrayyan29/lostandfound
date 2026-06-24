@@ -2,6 +2,7 @@ package com.pnl.lostandfound.backend.controller;
 
 import com.pnl.lostandfound.backend.model.User;
 import com.pnl.lostandfound.backend.service.AdminService;
+import com.pnl.lostandfound.backend.dto.response.AdminDashboardResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,11 @@ public class AdminController {
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> getStatistics() {
         return ResponseEntity.ok(adminService.getStatistics());
+    }
+
+    @GetMapping("/dashboard-advanced")
+    public ResponseEntity<AdminDashboardResponse> getAdvancedDashboard() {
+        return ResponseEntity.ok(adminService.getAdvancedDashboardData());
     }
 
     @GetMapping("/users")

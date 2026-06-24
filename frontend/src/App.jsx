@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
+import LandingPage    from './pages/LandingPage';
 import LoginPage      from './pages/LoginPage';
 import RegisterPage   from './pages/RegisterPage';
 import HomePage       from './pages/HomePage';
@@ -44,8 +45,8 @@ export default function App() {
             <ProtectedRoute><AdminPage /></ProtectedRoute>
           } />
 
-          {/* Default redirect */}
-          <Route path="/"  element={<Navigate to="/home" replace />} />
+          {/* Default routes */}
+          <Route path="/"  element={<LandingPage />} />
           <Route path="*"  element={<Navigate to="/home" replace />} />
         </Routes>
       </BrowserRouter>

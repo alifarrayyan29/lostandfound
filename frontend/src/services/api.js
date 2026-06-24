@@ -54,6 +54,7 @@ export const konfirmasiSelesai  = (matchId) => api.put(`/klaim/${matchId}/konfir
 
 // === ADMIN ===
 export const getAdminStats      = ()     => api.get('/admin/stats');
+export const getAdminAdvancedDashboard = () => api.get('/admin/dashboard-advanced');
 export const getAdminUsers      = ()     => api.get('/admin/users');
 export const verifyUser         = (id)   => api.put(`/admin/users/${id}/verify`);
 export const deleteLaporanHilang = (id)  => api.delete(`/admin/laporan/hilang/${id}`);
