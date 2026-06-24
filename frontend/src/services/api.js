@@ -46,11 +46,13 @@ export const createLaporanTemuan       = (data) => api.post('/laporan/temuan', d
 export const getMatchesByHilang  = (id)     => api.get(`/matching/hilang/${id}`);
 export const getMatchesByTemuan  = (id)     => api.get(`/matching/temuan/${id}`);
 export const getMyMatches        = ()        => api.get('/matching/my-matches');
+export const getMatchById        = (id)     => api.get(`/matching/${id}`);
 
 // === CHAT / KLAIM (via REST) ===
 export const getPesan           = (matchId) => api.get(`/klaim/${matchId}/pesan`);
 export const kirimPesanRest     = (matchId, isiPesan) => api.post(`/klaim/${matchId}/pesan`, { isiPesan });
 export const konfirmasiSelesai  = (matchId) => api.put(`/klaim/${matchId}/konfirmasi`);
+export const tolakMatch         = (matchId) => api.put(`/klaim/${matchId}/tolak`);
 
 // === ADMIN ===
 export const getAdminStats      = ()     => api.get('/admin/stats');

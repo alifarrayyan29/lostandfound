@@ -6,55 +6,54 @@ import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 
 function ChatContactCard({ match, user, onOpen }) {
-  // Tentukan siapa lawan bicara kita
   const isPelaporHilang = match.laporanHilang?.user?.nim === user?.nim;
-  const lawanBicara = isPelaporHilang 
-    ? match.laporanTemuan?.user 
+  const lawanBicara = isPelaporHilang
+    ? match.laporanTemuan?.user
     : match.laporanHilang?.user;
-
   const barangTerkait = isPelaporHilang
     ? match.laporanHilang?.barang?.deskripsi
     : match.laporanTemuan?.barang?.deskripsi;
-
   const isConfirmed = match.status === 'CONFIRMED';
+  const initials = lawanBicara?.nama?.[0]?.toUpperCase() || '?';
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.98 }}
+      exit={{ opacity: 0, scale: 0.97 }}
+      whileHover={{ y: -1 }}
       onClick={() => onOpen(match.id)}
-      className="card flex gap-4 p-4 cursor-pointer items-center transition-all hover:bg-[#1a1a1a]"
-      style={{ borderLeft: isConfirmed ? '4px solid #34D399' : '4px solid #C8FF00' }}
+      className="bg-white border border-slate-200 rounded-2xl p-4 cursor-pointer hover:shadow-md hover:border-slate-300 transition-all flex items-center gap-4"
     >
-      {/* Avatar (Inisial) */}
-      <div className="w-14 h-14 rounded-full flex-shrink-0 flex items-center justify-center text-xl font-black"
-        style={{ background: '#1f1f1f', color: isConfirmed ? '#34D399' : '#C8FF00' }}>
-        {lawanBicara?.nama?.[0]?.toUpperCase() || '?'}
+      {/* Avatar */}
+      <div className="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center text-lg font-bold"
+        style={{
+          background: isConfirmed ? '#F0FDF4' : '#EFF6FF',
+          color: isConfirmed ? '#16A34A' : '#2563EB',
+        }}>
+        {initials}
       </div>
 
+      {/* Content */}
       <div className="flex-1 min-w-0">
-        <div className="flex justify-between items-start mb-1">
-          <h3 className="font-bold text-white text-lg truncate">{lawanBicara?.nama || 'Pengguna'}</h3>
-          <span className="text-xs font-semibold px-2 py-1 rounded-full flex-shrink-0 ml-2"
-            style={{ 
-              background: isConfirmed ? 'rgba(16,185,129,0.1)' : 'rgba(200,255,0,0.1)', 
-              color: isConfirmed ? '#34D399' : '#C8FF00' 
+        <div className="flex justify-between items-center mb-1">
+          <h3 className="font-semibold text-slate-900 text-sm truncate">{lawanBicara?.nama || 'Pengguna'}</h3>
+          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md ml-2 flex-shrink-0"
+            style={{
+              background: isConfirmed ? '#F0FDF4' : '#EFF6FF',
+              color: isConfirmed ? '#16A34A' : '#2563EB',
             }}>
             {isConfirmed ? 'Selesai' : 'Aktif'}
           </span>
         </div>
-        <p className="text-sm truncate" style={{ color: '#8C8C8C' }}>
-          Terkait: {barangTerkait || 'Barang'}
-        </p>
+        <p className="text-xs text-slate-400 truncate">Terkait: {barangTerkait || 'Barang'}</p>
       </div>
 
-      <div className="flex-shrink-0 text-2xl ml-2 opacity-50">
-        💬
-      </div>
+      {/* Arrow */}
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="text-slate-300 flex-shrink-0">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+      </svg>
     </motion.div>
   );
 }
@@ -62,16 +61,14 @@ function ChatContactCard({ match, user, onOpen }) {
 export default function PesanPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [chats, setChats] = useState([]);
+  const [chats, setChats]     = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getMyMatches()
       .then((res) => {
         const allMatches = Array.isArray(res.data) ? res.data : [];
-        // Hanya ambil yang sudah diklaim (sudah chat) atau selesai
-        const activeChats = allMatches.filter(m => m.status === 'CLAIMED' || m.status === 'CONFIRMED');
-        setChats(activeChats);
+        setChats(allMatches.filter(m => m.status === 'CLAIMED' || m.status === 'CONFIRMED'));
       })
       .catch(() => setChats([]))
       .finally(() => setLoading(false));
@@ -79,41 +76,38 @@ export default function PesanPage() {
 
   return (
     <Layout>
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-3xl font-black text-white mb-2">Daftar Pesan</h1>
-        <p className="text-sm" style={{ color: '#8C8C8C' }}>
-          Lanjutkan komunikasi untuk pengembalian barang Anda.
-        </p>
+      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-7">
+        <h1 className="page-title mb-1">Pesan</h1>
+        <p className="text-sm text-slate-500">Lanjutkan komunikasi dengan penemu atau pemilik barang.</p>
       </motion.div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-24 gap-4">
-          <div className="w-10 h-10 rounded-full border-4 border-t-transparent animate-spin"
-            style={{ borderColor: '#C8FF00', borderTopColor: 'transparent' }} />
-          <p style={{ color: '#8C8C8C' }}>Memuat daftar chat...</p>
+        <div className="flex flex-col items-center justify-center py-24 gap-3">
+          <div className="w-8 h-8 rounded-full border-slate-200 border-t-blue-600 animate-spin" style={{ borderWidth: '3px' }} />
+          <p className="text-sm text-slate-400 font-medium">Memuat daftar chat...</p>
         </div>
       ) : chats.length === 0 ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          className="flex flex-col items-center justify-center py-24 gap-4 card border-dashed">
-          <span className="text-6xl">💬</span>
-          <p className="font-semibold text-white">Belum ada obrolan aktif</p>
-          <p className="text-sm text-center max-w-xs" style={{ color: '#8C8C8C' }}>
+          className="flex flex-col items-center justify-center py-24 gap-3 bg-white border border-dashed border-slate-200 rounded-2xl">
+          <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center text-2xl">💬</div>
+          <p className="font-semibold text-slate-700">Belum ada obrolan aktif</p>
+          <p className="text-sm text-slate-400 text-center max-w-xs leading-relaxed">
             Buka menu Notifikasi dan klaim sebuah Match untuk memulai percakapan baru.
           </p>
-          <button onClick={() => navigate('/notifikasi')} 
-            className="mt-4 btn-lime px-6 py-2 rounded-xl font-bold text-sm">
-            Lihat Notifikasi
+          <button onClick={() => navigate('/notifikasi')}
+            className="mt-2 px-6 py-2.5 text-sm font-semibold rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+            Lihat Notifikasi →
           </button>
         </motion.div>
       ) : (
         <AnimatePresence mode="popLayout">
           <div className="grid gap-3">
             {chats.map((chat) => (
-              <ChatContactCard 
-                key={chat.id} 
-                match={chat} 
+              <ChatContactCard
+                key={chat.id}
+                match={chat}
                 user={user}
-                onOpen={(id) => navigate(`/chat/${id}`)} 
+                onOpen={(id) => navigate(`/chat/${id}`)}
               />
             ))}
           </div>

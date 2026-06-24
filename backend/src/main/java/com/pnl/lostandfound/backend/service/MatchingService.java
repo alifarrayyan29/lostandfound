@@ -26,7 +26,7 @@ public class MatchingService {
     private final GeolocationService geolocationService;
     private final NotifikasiService notifikasiService;
 
-    private static final double MINIMUM_MATCH_THRESHOLD = 60.0;
+    private static final double MINIMUM_MATCH_THRESHOLD = 50.0;
 
     @Transactional
     public void findMatchesForHilang(LaporanHilang hilang) {
@@ -68,15 +68,28 @@ public class MatchingService {
 
         double score = 0.0;
 
+        // 1. Validasi Kategori (Wajib Sama)
+        if (!bHilang.getClass().equals(bTemuan.getClass())) {
+            return 0.0;
+        }
+
         // 2. Geolocation / Jarak (Max 30%)
-        double distance = geolocationService.calculateDistance(
-                bHilang.getLatitude(), bHilang.getLongitude(),
-                bTemuan.getLatitude(), bTemuan.getLongitude()
-        );
-        if (distance <= 500) {
-            score += 30.0;
-        } else if (distance <= 2000) {
-            score += 15.0; // Partial score
+        boolean isHilangLocationUnknown = bHilang.getLatitude() == 0.0 && bHilang.getLongitude() == 0.0;
+        boolean isTemuanLocationUnknown = bTemuan.getLatitude() == 0.0 && bTemuan.getLongitude() == 0.0;
+
+        if (isHilangLocationUnknown || isTemuanLocationUnknown) {
+            // Jika salah satu lokasi tidak diketahui, berikan nilai netral/parsial agar tidak terlalu menghukum
+            score += 20.0; 
+        } else {
+            double distance = geolocationService.calculateDistance(
+                    bHilang.getLatitude(), bHilang.getLongitude(),
+                    bTemuan.getLatitude(), bTemuan.getLongitude()
+            );
+            if (distance <= 500) {
+                score += 30.0;
+            } else if (distance <= 2000) {
+                score += 15.0; // Partial score
+            }
         }
 
         // 3. Kemiripan Deskripsi (Max 40%)

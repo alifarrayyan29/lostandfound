@@ -49,4 +49,14 @@ public class KlaimController {
         String message = pesanService.konfirmasiSelesai(matchId, nim);
         return ResponseEntity.ok(Map.of("message", message));
     }
+
+    @PutMapping("/{matchId}/tolak")
+    public ResponseEntity<?> tolakMatch(
+            @PathVariable Long matchId,
+            Authentication authentication) {
+        
+        String nim = authentication.getName();
+        String message = pesanService.tolakMatch(matchId, nim);
+        return ResponseEntity.ok(Map.of("message", message));
+    }
 }

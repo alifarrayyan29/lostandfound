@@ -45,6 +45,10 @@ public class PesanService {
             throw new RuntimeException("Unauthorized: Anda tidak berhak mengirim pesan di room ini.");
         }
 
+        if (match.getStatus() == StatusMatch.CONFIRMED || match.getStatus() == StatusMatch.REJECTED) {
+            throw new RuntimeException("Tidak dapat mengirim pesan. Kasus ini sudah ditutup.");
+        }
+
         // Jika status match masih SUGGESTED, otomatis ubah ke CLAIMED
         if (match.getStatus() == StatusMatch.SUGGESTED) {
             match.setStatus(StatusMatch.CLAIMED);
@@ -99,6 +103,27 @@ public class PesanService {
 
         matchResultRepository.save(match);
         return "Kasus selesai. Barang telah kembali!";
+    }
+
+    @Transactional
+    public String tolakMatch(Long matchId, String nim) {
+        MatchResult match = matchResultRepository.findById(matchId)
+                .orElseThrow(() -> new RuntimeException("Match tidak ditemukan"));
+
+        boolean isPelaporHilang = match.getLaporanHilang().getUser().getNim().equals(nim);
+        boolean isPelaporTemuan = match.getLaporanTemuan().getUser().getNim().equals(nim);
+
+        if (!isPelaporHilang && !isPelaporTemuan) {
+            throw new RuntimeException("Unauthorized: Anda tidak berhak mengubah status match ini.");
+        }
+
+        if (match.getStatus() == StatusMatch.CONFIRMED || match.getStatus() == StatusMatch.CLAIMED) {
+            throw new RuntimeException("Tidak dapat menolak match yang sudah diklaim atau selesai.");
+        }
+
+        match.setStatus(StatusMatch.REJECTED);
+        matchResultRepository.save(match);
+        return "Match berhasil ditolak.";
     }
 
     private PesanResponse buildResponse(Pesan pesan) {

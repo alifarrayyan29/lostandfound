@@ -33,4 +33,12 @@ public class MatchingController {
         List<MatchResult> results = matchResultRepository.findByUserNim(principal.getName());
         return ResponseEntity.ok(results);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MatchResult> getMatchById(@PathVariable Long id, Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).build();
+        MatchResult match = matchResultRepository.findById(id).orElse(null);
+        if (match == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(match);
+    }
 }
